@@ -14,7 +14,8 @@
         android:background="@drawable/search_line_backgroud"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="5dp">
 
         <EditText
             android:id="@+id/inputSearchText"
@@ -39,6 +40,25 @@
             app:srcCompat="@android:drawable/ic_menu_search" />
 
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/savedQueries"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:paddingTop="35dp"
+        android:paddingBottom="10dp"
+        android:visibility="gone"
+        android:paddingHorizontal="25dp"
+        android:layout_marginTop="-30dp"
+        android:background="@drawable/hint_search_history_background"
+        android:overScrollMode="never"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="@+id/searchLineContainer"
+        app:layout_constraintStart_toStartOf="@+id/searchLineContainer"
+        app:layout_constraintTop_toBottomOf="@+id/searchLineContainer"
+        android:elevation="3dp"/>
+
 
     <View
         android:id="@+id/searchLineSeparator"
