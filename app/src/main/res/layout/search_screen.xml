@@ -6,27 +6,31 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true">
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/searchLineContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:background="@drawable/search_line_backgroud"
+        android:elevation="5dp"
         android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:elevation="5dp">
+        app:layout_constraintTop_toTopOf="parent">
 
         <EditText
             android:id="@+id/inputSearchText"
-            android:layout_width="282dp"
-            android:layout_height="53dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:ems="10"
             android:focusableInTouchMode="true"
             android:inputType="textPersonName"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/buttonSearch"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_weight="3"/>
 
 
         <ImageButton
@@ -34,20 +38,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="#00000000"
-            app:layout_constraintBottom_toBottomOf="@+id/inputSearchText"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/inputSearchText"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@android:drawable/ic_menu_search" />
 
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/savedQueries"
+        android:id="@+id/savedQueriesList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:paddingTop="35dp"
-        android:paddingBottom="10dp"
+        android:paddingBottom="16dp"
         android:visibility="gone"
         android:paddingHorizontal="25dp"
         android:layout_marginTop="-30dp"
@@ -92,7 +96,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchLineContainer" />
+        />
 
     <TextView
         android:id="@+id/messageView"

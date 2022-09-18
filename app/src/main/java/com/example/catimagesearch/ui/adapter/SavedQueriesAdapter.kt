@@ -38,7 +38,5 @@ class SavedQueriesAdapter: RecyclerView.Adapter<SavedQueriesAdapter.ViewHolder>(
                 listener(it.titleQuery.text.toString())
             }
         }
-
     }
-
 }

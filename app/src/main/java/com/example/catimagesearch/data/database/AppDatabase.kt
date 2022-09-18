@@ -6,5 +6,5 @@ import com.example.catimagesearch.data.entity.SavedQueryModel
 
 @Database(entities = [SavedQueryModel::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun queryDao() : SavedQueryDao
+    abstract fun savedQueryDao() : SavedQueryDao
 }
