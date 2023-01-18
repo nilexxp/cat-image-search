@@ -1,18 +1,17 @@
 package com.example.catimagesearch.ui.search_screen
 
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.Controller
 import com.example.catimagesearch.App
-import com.example.catimagesearch.IRetrofitServices
 import com.example.catimagesearch.R
-import com.example.catimagesearch.data.database.SavedQueryDao
 import com.example.catimagesearch.data.google_responce.Item
 import com.example.catimagesearch.ui.adapter.ResponseAdapter
 import com.example.catimagesearch.ui.adapter.SavedQueriesAdapter
@@ -32,6 +31,7 @@ class SearchScreen: Controller() {
         container: ViewGroup,
         savedViewState: Bundle?
     ): View {
+
         val view = inflater.inflate(R.layout.search_screen, container, false)
 
         view.apply {
@@ -42,8 +42,8 @@ class SearchScreen: Controller() {
                 inputSearchText.setText(it)
             }
 
-            responseImageAdapter.listener =  {
-                presenter.clickedLink(it)
+            responseImageAdapter.listener =  { link, type ->
+                presenter.clickedButton(link, type)
             }
 
             buttonSearch.setOnClickListener {
@@ -59,10 +59,35 @@ class SearchScreen: Controller() {
         return view
     }
 
+    companion object ButtonType {
+        const val DOWNLOAD = "downloadButton"
+        const val SHARE = "shareButton"
+        const val COPY = "copyLinkButton"
+    }
     override fun onAttach(view: View) {
         super.onAttach(view)
         App.appComponent.inject(this)
         presenter.onCreate(this)
+    }
+
+
+    fun clickedShareButton(link: String) {
+
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, link)
+            type = "text/plain"
+//            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, "Поделитесь изображением!")
+        startActivity(shareIntent)
+
+//        showToast("clicked share link, link: $link")
+    }
+
+    fun showToast(text: String, length: Int = Toast.LENGTH_SHORT) {
+        Toast.makeText(this.applicationContext, text, length).show()
     }
 
 

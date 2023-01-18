@@ -2,4 +2,8 @@
     <string name="app_name">Cat Image Search</string>
     <string name="search">Поиск</string>
     <string name="placeholder">Placeholder</string>
+    <string name="response_item_image_description">Наденное изображение</string>
+    <string name="response_item_description_share">Поделиться картникой</string>
+    <string name="response_item_description_copy_link">Копирование ссылки</string>
+    <string name="response_item_description_download">Загрузка изображения</string>
 </resources>
