@@ -13,5 +13,5 @@
     <color name="search_hint">@color/teal_900</color>
     <color name="history_background">@color/teal_800</color>
     <color name="history_text">@color/search_hint</color>
-    <color name="background_button">#34000000</color>
+    <color name="background_button">#9AFFFFFF</color>
 </resources>

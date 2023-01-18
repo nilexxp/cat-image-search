@@ -100,13 +100,10 @@ class SearchScreen: Controller() {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, link)
             type = "text/plain"
-//            flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
 
         val shareIntent = Intent.createChooser(sendIntent, "Поделитесь изображением!")
         startActivity(shareIntent)
-
-//        showToast("clicked share link, link: $link")
     }
 
     fun showToast(text: String, length: Int = Toast.LENGTH_SHORT) {
