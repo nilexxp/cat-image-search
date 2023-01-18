@@ -60,7 +60,8 @@ class SearchScreenPresenter (
     fun search(query: String) {
         view.hideKeyboard()
         view.showLoader()
-        api.getData(API_KEY, CX, query, "image").enqueue(this)
+        saveQuery(query)
+        api.getData(API_KEY, CX, "$query котик", "image").enqueue(this)
     }
 
 
@@ -73,7 +74,6 @@ class SearchScreenPresenter (
 
         if (response.isSuccessful){
             response.body()?.items?.let { updateResponseList(it) }
-            saveQuery(response.body()?.queries?.request?.first()?.searchTerms.toString())
         } else {
             view.showMessage("Код ошибки: "+response.code().toString())
         }
