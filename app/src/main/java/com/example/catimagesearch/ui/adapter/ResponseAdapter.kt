@@ -39,7 +39,6 @@ class ResponseAdapter : RecyclerView.Adapter<ResponseAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ResponseAdapter.ViewHolder, position: Int) {
         val item = values[position]
-        holder.link.text = item.link.toString()
 
         holder.download.setOnClickListener {
             listener(item.link.toString(), SearchScreen.DOWNLOAD)
@@ -62,7 +61,6 @@ class ResponseAdapter : RecyclerView.Adapter<ResponseAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val image: ImageView = view.imageView
-        val link: TextView = view.linkResponse
         val download: ImageButton = view.downloadButton
         val copyLink: ImageButton = view.copyLinkButton
         val share: ImageButton = view.shareButton
