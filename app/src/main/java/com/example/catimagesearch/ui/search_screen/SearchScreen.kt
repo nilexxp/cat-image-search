@@ -1,12 +1,16 @@
 package com.example.catimagesearch.ui.search_screen
 
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.Controller
@@ -17,6 +21,7 @@ import com.example.catimagesearch.ui.adapter.ResponseAdapter
 import com.example.catimagesearch.ui.adapter.SavedQueriesAdapter
 import kotlinx.android.synthetic.main.search_screen.view.*
 import javax.inject.Inject
+
 
 class SearchScreen: Controller() {
 
@@ -53,10 +58,28 @@ class SearchScreen: Controller() {
                 if (hasFocus) presenter.inputTextFocus()
                 else hideSavedQueries()
             }
+            inputSearchText.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    presenter.search(inputSearchText.text.toString())
+                }
+                false
+            }
 
 
         }
         return view
+    }
+
+    fun hideKeyboard() {
+        val imm: InputMethodManager =
+            activity?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+
+        var view = activity!!.currentFocus
+
+        if (view == null) {
+            view = View(activity)
+        }
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     companion object ButtonType {

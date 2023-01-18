@@ -58,6 +58,7 @@ class SearchScreenPresenter (
         this.view = view
     }
     fun search(query: String) {
+        view.hideKeyboard()
         view.showLoader()
         api.getData(API_KEY, CX, query, "image").enqueue(this)
     }
