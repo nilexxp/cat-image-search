@@ -39,18 +39,16 @@ class ResponseAdapter : RecyclerView.Adapter<ResponseAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ResponseAdapter.ViewHolder, position: Int) {
         val item = values[position]
-        holder.link.text = item.image?.contextLink.toString()
-//        holder.itemView.setOnClickListener {
-//            listener(item.image?.contextLink.toString(), "item")
-//        }
+        holder.link.text = item.link.toString()
+
         holder.download.setOnClickListener {
-            listener(item.image?.contextLink.toString(), SearchScreen.DOWNLOAD)
+            listener(item.link.toString(), SearchScreen.DOWNLOAD)
         }
         holder.copyLink.setOnClickListener {
-            listener(item.image?.contextLink.toString(), SearchScreen.COPY)
+            listener(item.link.toString(), SearchScreen.COPY)
         }
         holder.share.setOnClickListener {
-            listener(item.image?.contextLink.toString(), SearchScreen.SHARE)
+            listener(item.link.toString(), SearchScreen.SHARE)
         }
         Picasso.get()
             .load(Uri.parse(item.image?.thumbnailLink))
