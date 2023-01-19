@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.FileProvider
 import com.example.catimagesearch.BuildConfig
 import com.example.catimagesearch.IRetrofitServices
+import com.example.catimagesearch.data.KeyData
 import com.example.catimagesearch.data.database.SavedQueryDao
 import com.example.catimagesearch.data.entity.SavedQueryModel
 import com.example.catimagesearch.data.google_responce.Item
@@ -37,13 +38,8 @@ class SearchScreenPresenter (
     private var api: IRetrofitServices,
     private var dao: SavedQueryDao,
     private var context: Context,
+    private var keyData: KeyData
 ): Callback<ResponseModel> {
-
-    //гугловская штука
-    companion object{
-        private const val API_KEY = "AIzaSyAq9xyzCZlcQFmCgKm633EZp1AFbmYYWfQ"
-        private const val CX = "8b8faaa29e4af41f0"
-    }
 
     private lateinit var view: SearchScreen
     private val coroutineIO = CoroutineScope(Dispatchers.Main)
@@ -56,7 +52,7 @@ class SearchScreenPresenter (
         view.hideKeyboard()
         view.showLoader()
         saveQuery(query)
-        api.getData(API_KEY, CX, "$query котик", "image").enqueue(this)
+        api.getData(keyData.API_KEY, keyData.CX, "$query котик", "image").enqueue(this)
     }
 
 
