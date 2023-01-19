@@ -5,6 +5,7 @@ import android.content.*
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Environment
 import android.os.Handler
@@ -14,6 +15,8 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.content.FileProvider
+import com.example.catimagesearch.BuildConfig
 import com.example.catimagesearch.IRetrofitServices
 import com.example.catimagesearch.R
 import com.example.catimagesearch.data.database.SavedQueryDao
@@ -27,10 +30,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.BufferedInputStream
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
+import java.io.*
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
@@ -97,7 +97,7 @@ class SearchScreenPresenter (
 
 
 
-    private fun clickedDownloadButton(link: String) {
+    fun clickedDownloadButton(link: String) {
         val myExecutor = Executors.newSingleThreadExecutor()
         val myHandler = Handler(Looper.getMainLooper())
 
@@ -126,7 +126,7 @@ class SearchScreenPresenter (
 //        view.showToast("clicked download, link: $link")
     }
 
-    private fun clickedCopyButton(link: String) {
+    fun clickedCopyButton(link: String) {
         val clipboard: ClipboardManager? =
             getSystemService(
                 context,
@@ -144,19 +144,49 @@ class SearchScreenPresenter (
 
     }
 
-    private fun clickedShareButton(link: String) {
-        view.clickedShareButton(link)
-    }
+    fun clickedShareButton(bitmap: BitmapDrawable) {
+        val bitmap = bitmap.bitmap
 
-    fun clickedButton(link: String, type: String) {
-        when(type) {
-            SearchScreen.DOWNLOAD -> clickedDownloadButton(link)
-            SearchScreen.SHARE -> clickedShareButton(link)
-            SearchScreen.COPY -> clickedCopyButton(link)
-            else -> view.showToast("Ошибка, link: $link")
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
 
+        val outputDir = File(view.applicationContext?.cacheDir?.absolutePath.toString() + "/images")
+        outputDir.mkdir()
+        val file = File(outputDir.absolutePath)
+        val outputFile = File.createTempFile("temp_", ".jpg", file)
+
+        val uri = FileProvider.getUriForFile(view.applicationContext!!, BuildConfig.APPLICATION_ID, outputFile)
+
+        var fileOutputStream: FileOutputStream? = null
+        try {
+            fileOutputStream = FileOutputStream(outputFile)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
         }
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
+
+        try {
+            fileOutputStream!!.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        val shareIntent = Intent()
+        shareIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        shareIntent.action = Intent.ACTION_SEND
+        shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
+        shareIntent.setDataAndType(uri, "image/jpeg")
+        view.startActivity(Intent.createChooser(shareIntent, "Send image"))
     }
+
+//    fun clickedButton(link: String, type: String, bitmap: BitmapDrawable) {
+//        when(type) {
+//            SearchScreen.DOWNLOAD -> clickedDownloadButton(link)
+//            SearchScreen.SHARE -> clickedShareButton(link,bitmap)
+//            SearchScreen.COPY -> clickedCopyButton(link)
+//            else -> view.showToast("Ошибка, link: $link")
+//
+//        }
+//    }
 
     // Function to establish connection and load image
     private fun mLoad(string: String): Bitmap? {
