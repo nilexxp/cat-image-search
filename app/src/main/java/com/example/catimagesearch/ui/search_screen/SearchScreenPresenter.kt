@@ -1,8 +1,9 @@
 package com.example.catimagesearch.ui.search_screen
 
+import android.Manifest
 import android.R.attr.label
 import android.content.*
-import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -12,21 +13,15 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
 import com.example.catimagesearch.BuildConfig
 import com.example.catimagesearch.IRetrofitServices
-import com.example.catimagesearch.R
 import com.example.catimagesearch.data.database.SavedQueryDao
 import com.example.catimagesearch.data.entity.SavedQueryModel
 import com.example.catimagesearch.data.google_responce.Item
 import com.example.catimagesearch.data.google_responce.ResponseModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -96,25 +91,43 @@ class SearchScreenPresenter (
         }
     }
 
-
+    suspend fun permission() = coroutineScope{
+        var c = async { view.activity?.requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)}
+    }
 
     fun clickedDownloadButton(link: String) {
-        val myExecutor = Executors.newSingleThreadExecutor()
-        val myHandler = Handler(Looper.getMainLooper())
+        GlobalScope.launch {
+
+            if (view.activity?.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                val g = async {
+                view.activity?.requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1) }
+                g.await()
+            }
+            val myExecutor = Executors.newSingleThreadExecutor()
+            val myHandler = Handler(Looper.getMainLooper())
+
+            try {
+                myExecutor.execute {
+                    val mImage = mLoad(link)
+                    myHandler.post {
+                        if (mImage != null) {
+                            mSaveMediaToStorage(mImage)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                view.showToast("Ошибка загрузки")
+            }
+
+        }
+
+
 
         // When Button is clicked, executor will
         // fetch the image and handler will display it.
         // Once displayed, it is stored locally
-
-            myExecutor.execute {
-                val mImage = mLoad(link)
-                myHandler.post {
-                    if(mImage!=null){
-                        mSaveMediaToStorage(mImage)
-                    }
-                }
-
-        }
     //        val job = GlobalScope.launch {
 //            val mImage = mLoad(link)
 //

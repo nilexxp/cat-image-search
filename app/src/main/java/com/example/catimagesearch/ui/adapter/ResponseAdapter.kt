@@ -50,7 +50,7 @@ class ResponseAdapter : RecyclerView.Adapter<ResponseAdapter.ViewHolder>() {
             .into(holder.image)
 
         holder.download.setOnClickListener {
-            downloadListener(item.image?.contextLink.toString())
+            downloadListener(item.link.toString())
         }
         holder.copyLink.setOnClickListener {
             copyListener(item.image?.contextLink.toString())

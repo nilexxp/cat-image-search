@@ -21,6 +21,7 @@ import com.example.catimagesearch.data.google_responce.Item
 import com.example.catimagesearch.ui.adapter.ResponseAdapter
 import com.example.catimagesearch.ui.adapter.SavedQueriesAdapter
 import kotlinx.android.synthetic.main.search_screen.view.*
+import kotlinx.coroutines.coroutineScope
 
 import javax.inject.Inject
 
@@ -99,7 +100,7 @@ class SearchScreen: Controller() {
 
 
     fun showToast(text: String, length: Int = Toast.LENGTH_SHORT) {
-        Toast.makeText(this.applicationContext, text, length).show()
+        Toast.makeText(applicationContext, text, length).show()
     }
 
 
