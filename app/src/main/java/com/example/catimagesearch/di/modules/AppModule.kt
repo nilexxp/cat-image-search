@@ -2,6 +2,7 @@ package com.example.catimagesearch.di.modules
 
 import android.content.Context
 import com.example.catimagesearch.IRetrofitServices
+import com.example.catimagesearch.data.KeyData
 import com.example.catimagesearch.data.database.SavedQueryDao
 import com.example.catimagesearch.ui.search_screen.SearchScreenPresenter
 import dagger.Module
@@ -28,7 +29,10 @@ class AppModule {
 
 
     @Provides
-    fun provideSearchScreenPresenter(api: IRetrofitServices, dao: SavedQueryDao, context: Context): SearchScreenPresenter =
-        SearchScreenPresenter(api, dao, context)
+    fun provideSearchScreenPresenter(api: IRetrofitServices, dao: SavedQueryDao, context: Context, keyData: KeyData): SearchScreenPresenter =
+        SearchScreenPresenter(api, dao, context, keyData)
+
+    @Provides
+    fun provideKeyData(): KeyData = KeyData()
 
 }

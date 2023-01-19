@@ -1,23 +1,30 @@
 package com.example.catimagesearch.ui.search_screen
 
-import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.TextView.OnEditorActionListener
+import android.widget.Toast
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.Controller
 import com.example.catimagesearch.App
-import com.example.catimagesearch.IRetrofitServices
+import com.example.catimagesearch.BuildConfig
 import com.example.catimagesearch.R
-import com.example.catimagesearch.data.database.SavedQueryDao
 import com.example.catimagesearch.data.google_responce.Item
 import com.example.catimagesearch.ui.adapter.ResponseAdapter
 import com.example.catimagesearch.ui.adapter.SavedQueriesAdapter
 import kotlinx.android.synthetic.main.search_screen.view.*
+import kotlinx.coroutines.coroutineScope
+
 import javax.inject.Inject
+
 
 class SearchScreen: Controller() {
 
@@ -32,6 +39,7 @@ class SearchScreen: Controller() {
         container: ViewGroup,
         savedViewState: Bundle?
     ): View {
+
         val view = inflater.inflate(R.layout.search_screen, container, false)
 
         view.apply {
@@ -42,8 +50,10 @@ class SearchScreen: Controller() {
                 inputSearchText.setText(it)
             }
 
-            responseImageAdapter.listener =  {
-                presenter.clickedLink(it)
+            with(responseImageAdapter) {
+                shareListener = {b -> presenter.clickedShareButton(b)}
+                copyListener = {l -> presenter.clickedCopyButton(l)}
+                downloadListener = {l -> presenter.clickedDownloadButton(l)}
             }
 
             buttonSearch.setOnClickListener {
@@ -53,16 +63,44 @@ class SearchScreen: Controller() {
                 if (hasFocus) presenter.inputTextFocus()
                 else hideSavedQueries()
             }
+            inputSearchText.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    presenter.search(inputSearchText.text.toString())
+                }
+                false
+            }
 
 
         }
         return view
     }
 
+    fun hideKeyboard() {
+        val imm: InputMethodManager =
+            activity?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+
+        var view = activity!!.currentFocus
+
+        if (view == null) {
+            view = View(activity)
+        }
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    companion object ButtonType {
+        const val DOWNLOAD = "downloadButton"
+        const val SHARE = "shareButton"
+        const val COPY = "copyLinkButton"
+    }
     override fun onAttach(view: View) {
         super.onAttach(view)
         App.appComponent.inject(this)
         presenter.onCreate(this)
+    }
+
+
+    fun showToast(text: String, length: Int = Toast.LENGTH_SHORT) {
+        Toast.makeText(applicationContext, text, length).show()
     }
 
 
