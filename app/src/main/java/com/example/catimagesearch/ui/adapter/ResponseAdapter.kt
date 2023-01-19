@@ -1,5 +1,6 @@
 package com.example.catimagesearch.ui.adapter
 
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.provider.ContactsContract
 import android.view.LayoutInflater
@@ -18,7 +19,9 @@ import kotlinx.android.synthetic.main.response_item.view.*
 class ResponseAdapter : RecyclerView.Adapter<ResponseAdapter.ViewHolder>() {
 
     private var values: MutableList<Item> = mutableListOf()
-    lateinit var listener: (link: String, type: String)->Unit
+    lateinit var downloadListener: (item: String)->Unit
+    lateinit var copyListener: (item: String)->Unit
+    lateinit var shareListener: (bitmap: BitmapDrawable)->Unit
 
     fun refresh(list: List<Item>){
         values.clear()
@@ -40,20 +43,22 @@ class ResponseAdapter : RecyclerView.Adapter<ResponseAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ResponseAdapter.ViewHolder, position: Int) {
         val item = values[position]
 
-        holder.download.setOnClickListener {
-            listener(item.link.toString(), SearchScreen.DOWNLOAD)
-        }
-        holder.copyLink.setOnClickListener {
-            listener(item.link.toString(), SearchScreen.COPY)
-        }
-        holder.share.setOnClickListener {
-            listener(item.link.toString(), SearchScreen.SHARE)
-        }
         Picasso.get()
             .load(Uri.parse(item.image?.thumbnailLink))
             .fit()
             .centerCrop()
             .into(holder.image)
+
+        holder.download.setOnClickListener {
+            downloadListener(item.image?.contextLink.toString())
+        }
+        holder.copyLink.setOnClickListener {
+            copyListener(item.image?.contextLink.toString())
+        }
+        holder.share.setOnClickListener {
+            shareListener(holder.image.drawable as BitmapDrawable)
+        }
+
 
     }
 

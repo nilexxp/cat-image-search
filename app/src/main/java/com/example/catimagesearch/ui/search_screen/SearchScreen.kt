@@ -1,7 +1,6 @@
 package com.example.catimagesearch.ui.search_screen
 
 import android.content.Context.INPUT_METHOD_SERVICE
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,14 +11,17 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.Controller
 import com.example.catimagesearch.App
+import com.example.catimagesearch.BuildConfig
 import com.example.catimagesearch.R
 import com.example.catimagesearch.data.google_responce.Item
 import com.example.catimagesearch.ui.adapter.ResponseAdapter
 import com.example.catimagesearch.ui.adapter.SavedQueriesAdapter
 import kotlinx.android.synthetic.main.search_screen.view.*
+
 import javax.inject.Inject
 
 
@@ -47,8 +49,10 @@ class SearchScreen: Controller() {
                 inputSearchText.setText(it)
             }
 
-            responseImageAdapter.listener =  { link, type ->
-                presenter.clickedButton(link, type)
+            with(responseImageAdapter) {
+                shareListener = {b -> presenter.clickedShareButton(b)}
+                copyListener = {l -> presenter.clickedCopyButton(l)}
+                downloadListener = {l -> presenter.clickedDownloadButton(l)}
             }
 
             buttonSearch.setOnClickListener {
@@ -93,18 +97,6 @@ class SearchScreen: Controller() {
         presenter.onCreate(this)
     }
 
-
-    fun clickedShareButton(link: String) {
-
-        val sendIntent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, link)
-            type = "text/plain"
-        }
-
-        val shareIntent = Intent.createChooser(sendIntent, "Поделитесь изображением!")
-        startActivity(shareIntent)
-    }
 
     fun showToast(text: String, length: Int = Toast.LENGTH_SHORT) {
         Toast.makeText(this.applicationContext, text, length).show()
